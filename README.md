@@ -24,7 +24,6 @@ ecommify-db-optimization/
 │   ├── ddl/
 │   ├── indexes/
 │   ├── queries/
-│   ├── results/
 │   ├── scripts/
 │   └── notebooks/
 ├── mongodb/
@@ -34,7 +33,6 @@ ecommify-db-optimization/
 │   ├── scripts/
 │   ├── sharding/
 │   └── notebooks/
-├── evidence/
 ├── data/
 ├── requirements.txt
 ├── .env.example
