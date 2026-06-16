@@ -1,4 +1,35 @@
-# Ecommify Database Optimization
+<h1 align="center">Ecommify Database Optimization</h1>
+
+<div align="center">
+  <img src="https://img.shields.io/badge/SQL-Orange?style=for-the-badge&logo=sql&logoColor=white" alt="SQL Badge"/>
+  <img src="https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB Badge"/>
+  <img src="https://img.shields.io/badge/Universidad-La_Sabana-0033A0?style=for-the-badge" alt="UNISABANA Badge"/>
+  <img src="https://img.shields.io/badge/Maestr%C3%ADa-Arquitectura_de_Software-2b9348?style=for-the-badge" alt="Maestria Badge"/>
+  <img src="https://img.shields.io/badge/Asignatura-Dise%C3%B1o%20y%20Optimizaci%C3%B3n%20de%20Bases%20de%20Datos-8A2BE2?style=for-the-badge" alt="Asignatura Badge"/>
+  <img src="https://img.shields.io/badge/Status-Completado-success?style=for-the-badge" alt="Status Badge"/>
+</div>
+
+<p align="center">
+  <i>Archivo correspondiente a las Actividades Evaluativas de Diseño y Optimización de Bases de Datos.</i>
+</p>
+
+---
+
+## Tabla de Contenidos
+1. [Descripción General](#descripción-general)
+2. [Arquitectura de la Solución](#arquitectura-de-la-solución)  
+3. [Estructura del Repositorio](#estructura-del-repositorio)
+4. [Configuración del Entorno](#configuración-del-entorno)
+5. [Variables de Entorno](#variables-de-entorno)
+6. [Ejecución PostgreSQL](#ejecución-postgresql)
+7. [Ejecución MongoDB](#ejecución-mongodb)
+8. [Flujo ETL](#flujo-etl)
+9. [Principales Optimizaciones Implementadas](#principales-optimizaciones-implementadas)
+10. [Documentación](#documentación)
+11. [Notebooks Académicos](#notebooks-académicos)
+12. [Integrantes](#integrantes)
+
+---
 
 ## Descripción General
 
@@ -10,6 +41,10 @@ Este repositorio contiene la implementación desarrollada para la actividad de o
 * Supabase como proveedor PostgreSQL
 
 El proyecto implementa estrategias de optimización de rendimiento mediante indexación especializada, particionamiento, validación documental, aggregation pipelines y análisis cuantitativo de consultas.
+
+### Video de presentación de la Solución
+
+[![Ecommify Database Optimization](https://img.youtube.com/vi/YJ5iH-2D840/hqdefault.jpg)](https://drive.google.com/file/d/11Sz5RFka1riZqh1UkiWITrQ7q_mB0cen/view?usp=sharing)
 
 ---
 
@@ -66,18 +101,18 @@ ecommify-db-optimization/
 │
 ├── data/
 │   └── raw/
-|       └── olist_customers_dataset.csv
-|       └── olist_geolocation_dataset.csv
-|       └── olist_order_items_dataset.csv
-|       └── olist_order_payments_dataset.csv
-|       └── olist_order_reviews_dataset.csv
-|       └── olist_orders_dataset.csv
-|       └── olist_products_dataset.csv
-|       └── olist_sellets_dataset.csv
-|       └── product_category_name_translation.csv
+│       ├── olist_customers_dataset.csv
+│       ├── olist_geolocation_dataset.csv
+│       ├── olist_order_items_dataset.csv
+│       ├── olist_order_payments_dataset.csv
+│       ├── olist_order_reviews_dataset.csv
+│       ├── olist_orders_dataset.csv
+│       ├── olist_products_dataset.csv
+│       ├── olist_sellers_dataset.csv
+│       └── product_category_name_translation.csv
 │
 ├── docs/
-|   └── Optimización_de_Rendimiento_en_PostgreSQL&MongoDB.pdf
+│   └── Optimización_de_Rendimiento_en_PostgreSQL&MongoDB.pdf
 │
 ├── etl/
 │   ├── postgresql/
@@ -92,7 +127,7 @@ ecommify-db-optimization/
 │   ├── indexes/
 │   │   └── indexes.py
 │   ├── pipelines/
-│   │   └── explain_pipeline.py
+│   │   ├── explain_pipeline.py
 │   │   └── reviews_pipeline.py
 │   └── sharding/
 │       └── sharding_replica_set_design.py
@@ -101,29 +136,29 @@ ecommify-db-optimization/
 │   ├── postgresql/
 │   │   └── Modelado_de_Tablas_PostgreSQL.ipynb
 │   └── mongodb/
-│       └── Actividad5_NOSQL.ipynb
+│       ├── Actividad5_NOSQL.ipynb
 │       └── Modelado_de_Documentos_NoSQL.ipynb
 │
 ├── postgresql/
 │   ├── ddl/
-│   │   └── 00_extensions.sql
-│   │   └── 01_schema.sql
-│   │   └── 02_partitions.sql
+│   │   ├── 00_extensions.sql
+│   │   ├── 01_schema.sql
+│   │   ├── 02_partitions.sql
 │   │   └── 03_comments.sql
 │   ├── indexes/
 │   │   └── 04_indexes.sql
 │   └── queries/
-│       └── q1_catalog.sql
-│       └── q2_order_tracking.sql
-│       └── q3_geographic.sql
-│       └── q4_quality_dashboard.sql
-│       └── q5_payments.sql
+│       ├── q1_catalog.sql
+│       ├── q2_order_tracking.sql
+│       ├── q3_geographic.sql
+│       ├── q4_quality_dashboard.sql
+│       ├── q5_payments.sql
 │       └── run_all_queries.sql
 │
 ├── results/
 │   ├── Resultado_Queries_Con_Optimizacion.txt
 │   └── Resultado_Queries_Sin_Optimizacion.txt
-|
+│
 ├── .env.example
 ├── README.md
 └── requirements.txt
