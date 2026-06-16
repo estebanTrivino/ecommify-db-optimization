@@ -1,163 +1,328 @@
-# Ecommify - Optimización de Rendimiento en PostgreSQL y MongoDB
+# Ecommify Database Optimization
 
-Repositorio académico de la asignatura **Diseño y Optimización de Bases de Datos**. Contiene una implementación reproducible de optimización de rendimiento para la plataforma Ecommify, usando **PostgreSQL/Supabase** como motor transaccional y **MongoDB Atlas** como motor documental analítico.
+## Descripción General
 
-## Objetivo
+Este repositorio contiene la implementación desarrollada para la actividad de optimización de bases de datos de la plataforma **Ecommify**, utilizando una arquitectura de persistencia híbrida basada en:
 
-Implementar, ejecutar y documentar optimizaciones de rendimiento en PostgreSQL y MongoDB mediante:
+* PostgreSQL (OLTP)
+* MongoDB Atlas (OLAP)
+* Python para procesos ETL
+* Supabase como proveedor PostgreSQL
 
-- Esquema relacional con tipos avanzados y extensiones.
-- Particionamiento declarativo en PostgreSQL.
-- Índices especializados B-Tree, GIN, GiST y JSONB.
-- Modelo documental en MongoDB con JSON Schema.
-- Índices compuestos y parciales.
-- Aggregation pipelines optimizados.
-- Evidencias cuantitativas antes/después.
-- Diseño teórico de Replica Set y Sharding.
+El proyecto implementa estrategias de optimización de rendimiento mediante indexación especializada, particionamiento, validación documental, aggregation pipelines y análisis cuantitativo de consultas.
 
-## Estructura
+---
+
+## Arquitectura de la Solución
+
+La solución adopta un enfoque de **Persistencia Políglota (Polyglot Persistence)**.
+
+### PostgreSQL
+
+Responsable de:
+
+* Clientes
+* Productos
+* Vendedores
+* Pedidos
+* Pagos
+* Geolocalización
+* Promociones
+
+Características implementadas:
+
+* Particionamiento por rango temporal
+* Índices B-Tree
+* Índices GIN
+* Índices GiST
+* JSONB
+* PostGIS
+* pg_trgm
+
+### MongoDB Atlas
+
+Responsable de:
+
+* Catálogo analítico de productos
+* Reseñas de clientes
+* Consultas agregadas
+* Análisis de reputación de productos
+
+Características implementadas:
+
+* JSON Schema Validation
+* Índices compuestos
+* Índices parciales
+* Aggregation Pipelines
+* Diseño teórico de Replica Sets
+* Diseño teórico de Sharding
+
+---
+
+## Estructura del Repositorio
 
 ```text
 ecommify-db-optimization/
+│
+├── data/
+│   └── raw/
+|       └── olist_customers_dataset.csv
+|       └── olist_geolocation_dataset.csv
+|       └── olist_order_items_dataset.csv
+|       └── olist_order_payments_dataset.csv
+|       └── olist_order_reviews_dataset.csv
+|       └── olist_orders_dataset.csv
+|       └── olist_products_dataset.csv
+|       └── olist_sellets_dataset.csv
+|       └── product_category_name_translation.csv
+│
 ├── docs/
-├── postgresql/
-│   ├── ddl/
-│   ├── indexes/
-│   ├── queries/
-│   ├── scripts/
-│   └── notebooks/
+|   └── Optimización_de_Rendimiento_en_PostgreSQL&MongoDB.pdf
+│
+├── etl/
+│   ├── postgresql/
+│   │   └── etl_postgresql.py
+│   │
+│   └── mongodb/
+│       └── etl_mongodb.py
+│
 ├── mongodb/
 │   ├── schema/
+│   │   └── validators.py
 │   ├── indexes/
+│   │   └── indexes.py
 │   ├── pipelines/
-│   ├── scripts/
-│   ├── sharding/
-│   └── notebooks/
-├── data/
-├── requirements.txt
+│   │   └── explain_pipeline.py
+│   │   └── reviews_pipeline.py
+│   └── sharding/
+│       └── sharding_replica_set_design.py
+│
+├── notebooks/
+│   ├── postgresql/
+│   │   └── Modelado_de_Tablas_PostgreSQL.ipynb
+│   └── mongodb/
+│       └── Actividad5_NOSQL.ipynb
+│       └── Modelado_de_Documentos_NoSQL.ipynb
+│
+├── postgresql/
+│   ├── ddl/
+│   │   └── 00_extensions.sql
+│   │   └── 01_schema.sql
+│   │   └── 02_partitions.sql
+│   │   └── 03_comments.sql
+│   ├── indexes/
+│   │   └── 04_indexes.sql
+│   └── queries/
+│       └── q1_catalog.sql
+│       └── q2_order_tracking.sql
+│       └── q3_geographic.sql
+│       └── q4_quality_dashboard.sql
+│       └── q5_payments.sql
+│       └── run_all_queries.sql
+│
+├── results/
+│   ├── Resultado_Queries_Con_Optimizacion.txt
+│   └── Resultado_Queries_Sin_Optimizacion.txt
+|
 ├── .env.example
-└── README.md
+├── README.md
+└── requirements.txt
 ```
 
-## Requisitos
+---
 
-- Python 3.10+
-- PostgreSQL/Supabase con PostGIS habilitable
-- MongoDB Atlas
-- Mongo Shell o MongoDB Compass para ejecutar scripts `.js`
-- Dataset Olist ubicado en `data/raw/`
+## Configuración del Entorno
 
-Instalación de dependencias:
+### 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/estebanTrivino/ecommify-db-optimization.git
+cd ecommify-db-optimization
+```
+
+### 2. Crear entorno virtual
+
+```bash
+python -m venv venv
+```
+
+Windows:
+
+```bash
+venv\Scripts\activate
+```
+
+Linux / Mac:
+
+```bash
+source venv/bin/activate
+```
+
+### 3. Instalar dependencias
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Crear archivo `.env` a partir de `.env.example`:
+---
 
-```bash
-cp .env.example .env
-```
+## Variables de Entorno
 
-Configurar:
+Crear un archivo `.env` a partir de `.env.example`.
+
+Ejemplo:
 
 ```env
-POSTGRES_URL=postgresql://usuario:password@host:puerto/database
+POSTGRES_URL=postgresql://usuario:password@host:5432/postgres
+
 MONGO_URI=mongodb+srv://usuario:password@cluster.mongodb.net/
+
 MONGO_DB=ecommify_db
+
 DATA_PATH=./data/raw
 ```
 
+---
+
 ## Ejecución PostgreSQL
 
-Ejecutar los scripts SQL en este orden:
+### Crear estructura
 
-```bash
-psql "$POSTGRES_URL" -f postgresql/ddl/00_extensions.sql
-psql "$POSTGRES_URL" -f postgresql/ddl/01_schema.sql
-psql "$POSTGRES_URL" -f postgresql/ddl/02_partitions.sql
-psql "$POSTGRES_URL" -f postgresql/ddl/03_comments.sql
+Ejecutar en orden:
+
+```sql
+postgresql/ddl/00_extensions.sql
+
+postgresql/ddl/01_schema.sql
+
+postgresql/ddl/02_partitions.sql
+
+postgresql/indexes/04_indexes.sql
 ```
 
-Cargar datos:
+### Poblar PostgreSQL
 
 ```bash
-python postgresql/scripts/load_postgresql_data.py
+python etl/postgresql/etl_postgresql.py
 ```
 
-Ejecutar consultas antes de crear índices para obtener línea base:
+El proceso realiza:
 
-```bash
-psql "$POSTGRES_URL" -f postgresql/queries/q1_catalog.sql
-psql "$POSTGRES_URL" -f postgresql/queries/q2_order_tracking.sql
-psql "$POSTGRES_URL" -f postgresql/queries/q3_geographic.sql
-psql "$POSTGRES_URL" -f postgresql/queries/q4_quality_dashboard.sql
-psql "$POSTGRES_URL" -f postgresql/queries/q5_payments.sql
-```
+* Lectura de CSV
+* Transformación de datos
+* Generación de atributos derivados
+* Construcción de objetos PostGIS
+* Inserción en PostgreSQL
 
-Crear índices:
-
-```bash
-psql "$POSTGRES_URL" -f postgresql/indexes/04_indexes.sql
-```
-
-Ejecutar de nuevo las consultas para comparar resultados.
+---
 
 ## Ejecución MongoDB
 
-Cargar y optimizar desde Python:
+### Crear colecciones y validadores
+
+Los validadores JSON Schema se encuentran en:
+
+```text
+mongodb/schema/
+```
+
+### Poblar MongoDB
 
 ```bash
-python mongodb/scripts/load_mongodb_data.py
+python etl/mongodb/etl_mongodb.py
 ```
 
-Opcionalmente, ejecutar manualmente los scripts en Mongo Shell o Compass:
+El proceso realiza:
 
-```javascript
-load("mongodb/schema/01_products_validator.py")
-load("mongodb/schema/02_reviews_validator.py")
-load("mongodb/indexes/03_indexes.py")
-load("mongodb/pipelines/04_reviews_aggregation_pipeline.py")
-load("mongodb/pipelines/05_reviews_explain.py")
+* Lectura de datasets
+* Conversión relacional → documental
+* Creación de documentos products
+* Creación de documentos reviews
+* Inserción en MongoDB Atlas
+* Creación de índices
+* Ejecución de aggregation pipelines
+* Análisis de rendimiento mediante explain()
+
+---
+
+## Flujo ETL
+
+### PostgreSQL
+
+```text
+CSV
+ ↓
+Transformación
+ ↓
+PostgreSQL
 ```
 
-## Resultados PostgreSQL
+### MongoDB
 
-| Consulta | Antes | Después | Mejora aproximada |
-|---|---:|---:|---:|
-| Q1 - Catálogo | 1599.091 ms | 45.109 ms | 97.18% |
-| Q2 - Rastreo | 477.887 ms | 12.476 ms | 97.39% |
-| Q3 - Geográfico | 739.227 ms | 86.699 ms | 88.27% |
-| Q4 - Dashboard | 1890.701 ms | 936.741 ms | 50.45% |
-| Q5 - Pagos | 1109.451 ms | 23.963 ms | 97.84% |
+```text
+CSV
+ ↓
+Transformación Documental
+ ↓
+MongoDB Atlas
+ ↓
+Aggregation Pipelines
+```
 
-Los planes de ejecución completos están en `postgresql/results/`.
+---
 
-## Resultados MongoDB
+## Principales Optimizaciones Implementadas
 
-La optimización transforma consultas con escaneo completo de colección en planes que usan índices compuestos y parciales. Se evalúa mediante `executionStats`, revisando principalmente:
+### PostgreSQL
 
-- `executionTimeMillis`
-- `totalDocsExamined`
-- plan ganador (`winningPlan`)
-- uso de `IXSCAN` frente a `COLLSCAN`
+* Particionamiento por rango temporal
+* Índices GIN para búsquedas textuales
+* Índices GiST para consultas geográficas
+* Índices JSONB
+* Optimización de consultas críticas
 
-## Decisiones técnicas clave
+### MongoDB
 
-1. **PostgreSQL como sistema transaccional**: mantiene integridad sobre pedidos, clientes y pagos.
-2. **MongoDB como motor analítico**: soporta análisis de productos y reseñas mediante documentos y agregaciones.
-3. **Particionamiento temporal en orders**: reduce el alcance de lectura sobre datos históricos.
-4. **Índices especializados**: cada patrón de consulta usa el tipo de índice adecuado.
-5. **Consistencia eventual**: MongoDB recibe datos transformados para análisis sin afectar la operación transaccional.
+* Índices compuestos ESR
+* Índices parciales
+* Aggregation Pipelines optimizados
+* Diseño de Sharding
+* Replica Sets
+
+---
+
+## Documentación
+
+La documentación técnica completa del proyecto se encuentra en:
+
+```text
+docs/
+```
+
+---
+
+## Notebooks Académicos
+
+Los notebooks originales utilizados durante el desarrollo se encuentran en:
+
+```text
+notebooks/
+```
+
+Estos archivos documentan el proceso experimental realizado durante la actividad académica y sirven como respaldo de las decisiones de diseño y optimización implementadas.
+
+---
 
 ## Integrantes
 
-- Juan Daniel Valderrama Pérez
-- Jorge Esteban Triviño Correa
-- Javier Andres Baron Fontanilla
+* Jorge Esteban Triviño Correa
+* Juan Daniel Valderrama Pérez
+* Javier Andrés Barón Fontanilla
 
-## Universidad
+---
 
-Universidad de La Sabana  
-Facultad de Ingeniería  
-2026
+## Asignatura
+
+Diseño y Optimización de Bases de Datos
+
+Maestría en Arquitectura de Software
