@@ -1,0 +1,8 @@
+pandas
+sqlalchemy
+psycopg2-binary
+pymongo[srv]
+tqdm
+tabulate
+matplotlib
+python-dotenv
