@@ -13,5 +13,3 @@ Archivos esperados:
 - olist_order_reviews_dataset.csv
 - olist_order_payments_dataset.csv
 - olist_order_items_dataset.csv
-
-Los archivos CSV no se incluyen en el repositorio por tamaño y reproducibilidad externa.
